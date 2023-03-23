@@ -20,6 +20,14 @@ namespace AzurePractice
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    webBuilder.ConfigureAppConfiguration(config =>
+                    {
+                        IConfiguration settings = config.Build();
+                        string connectionString = settings.GetValue<string>("AppConfig");
+
+                        // Load configuration from Azure App Configuration
+                        config.AddAzureAppConfiguration(connectionString);
+                    });
                     webBuilder.UseStartup<Startup>();
                 });
     }

@@ -1,4 +1,5 @@
 ﻿using AzurePractice.Models;
+using AzurePractice.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -14,18 +15,31 @@ namespace AzurePractice.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IKeyVaultManager _keyVaultManager;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IKeyVaultManager keyVaultManager)
         {
             _logger = logger;
+            _keyVaultManager = keyVaultManager;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            var connectionString = await _keyVaultManager.GetSecret("ConnectionString");
             return View();
         }
 
         public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        public IActionResult KeyVault()
+        {
+            return View();
+        }
+
+        public IActionResult ConfigurationManager()
         {
             return View();
         }

@@ -21,8 +21,10 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="nav navbar-nav">
-                        <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                        <li><a asp-area="" asp-controller="Home" asp-action="Claims">Claims</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="Index">Home&nbsp;</a></li>
+                        @*<li><a asp-area="" asp-controller="Home" asp-action="Claims">Claims</a></li>*@
+                        <li><a asp-area="" asp-controller="Home" asp-action="KeyVault">KeyVault&nbsp;</a></li>
+                        <li><a asp-area="" asp-controller="Home" asp-action="ConfigurationManager">ConfigurationManager&nbsp;</a></li>
                     </ul>
                     <partial name="_LoginPartial" />
                 </div>

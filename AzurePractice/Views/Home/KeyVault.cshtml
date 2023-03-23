@@ -1,0 +1,35 @@
+﻿
+@{
+    ViewData["Title"] = "KeyVault";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>KeyVault</h1>
+
+//Work on Azure web app<br />
+SecretClient secretClient = new SecretClient(new System.Uri("https://azurepracticekey.vault.azure.net/"), new DefaultAzureCredential());
+<br />
+//Using Access policy given in Keyvault to app<br />
+TokenCredential tokenCredential = new ClientSecretCredential(tenantId, clientId, clientSecret);<br />
+SecretClient secretClient = new SecretClient(new System.Uri(keyVaultUrl), tokenCredential);
+<br />
+var connectionString= secretClient.GetSecret("ConnectionString");
+<br />
+//Used in injection as well<br />
+
+  services.AddAzureClients(option=> {
+                option.AddSecretClient(new System.Uri(keyVaultUrl));
+            });<br />
+
+   services.AddScoped<IKeyVaultManager, KeyVaultManager>
+    ();
+
+    <br />
+
+    services.AddAzureClients(option=> {
+    option.AddSecretClient(new System.Uri(keyVaultUrl));
+    //option.UseCredential(new EnvironmentCredential());
+    //option.UseCredential(new DefaultAzureCredential());
+    option.UseCredential(new ClientSecretCredential(tenantId, clientId, secretKey));
+    });
+

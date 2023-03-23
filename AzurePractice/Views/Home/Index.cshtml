@@ -5,9 +5,29 @@
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    //For Authentication<br />
 
-    using Microsoft.AspNetCore.Http;
-    using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-    using Microsoft.Identity.Web;
-    using Microsoft.Identity.Web.UI;
+    using Microsoft.AspNetCore.Http;<br />
+    using Microsoft.AspNetCore.Authentication.OpenIdConnect;<br />
+    using Microsoft.Identity.Web;<br />
+    using Microsoft.Identity.Web.UI;<br />
+
+    <br />
+    services
+    .AddAuthentication(o =>
+    {
+    o.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    o.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
+    })
+    .AddMicrosoftIdentityWebApp(Configuration.GetSection("AzureAd"));
+
+    <br />
+    "AzureAd": {
+    "Instance": "https://login.microsoftonline.com/",
+    "Domain": "domain name",
+    "ClientId": "client Id from app reg",
+    "TenantId": "tenantId from app reg",
+    "CallbackPath": "/signin-oidc"
+    }
+
 </div>

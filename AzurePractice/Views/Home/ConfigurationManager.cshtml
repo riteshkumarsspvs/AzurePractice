@@ -1,0 +1,40 @@
+﻿
+@{
+    ViewData["Title"] = "ConfigurationManager";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>ConfigurationManager</h1>
+
+<br />
+
+using Microsoft.Extensions.Configuration;
+<br />
+<br />
+
+  public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.ConfigureAppConfiguration(config =>
+                    {
+                        IConfiguration settings = config.Build();
+                        string connectionString = settings.GetValue<string>
+    ("AppConfig");
+
+    // Load configuration from Azure App Configuration
+    config.AddAzureAppConfiguration(connectionString);
+    });
+    webBuilder.UseStartup<Startup>
+    ();
+    });
+
+    <br />
+    <br />
+    var clientId = Configuration.GetValue<string>
+        ("ClientId");<br />
+        var tenantId = Configuration.GetValue<string>
+            ("TenantId");<br />
+            var secretKey = Configuration.GetValue<string>("SecretKey");<br />
+
+

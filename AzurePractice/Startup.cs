@@ -1,7 +1,10 @@
+using Azure.Identity;
+using AzurePractice.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -11,7 +14,9 @@ using Microsoft.Identity.Web.UI;
 namespace AzurePractice
 {
     public class Startup
-    {
+    {       
+        private const string keyVaultUrl = "https://keyvaultpractice.vault.azure.net/";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -22,22 +27,25 @@ namespace AzurePractice
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddAuthentication(option =>
-            //{
-            //    //option.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-            //    option.DefaultScheme = OpenIdConnectDefaults.AuthenticationScheme;
-            //    option.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
-            //})
-            //.AddAzureAD(option => Configuration.Bind("AzureAd", option));
-            ////.AddCookie();
-            ///
-            services
-               .AddAuthentication(o =>
+            var clientId = Configuration.GetValue<string>("ClientId");
+            var tenantId = Configuration.GetValue<string>("TenantId");
+            var secretKey = Configuration.GetValue<string>("SecretKey");
+
+            services.AddAuthentication(o =>
                {
                    o.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                    o.DefaultChallengeScheme = OpenIdConnectDefaults.AuthenticationScheme;
                })
                .AddMicrosoftIdentityWebApp(Configuration.GetSection("AzureAd"));
+
+            services.AddAzureClients(option=> {
+                option.AddSecretClient(new System.Uri(keyVaultUrl));
+                //option.UseCredential(new EnvironmentCredential());
+                //option.UseCredential(new DefaultAzureCredential());
+                option.UseCredential(new ClientSecretCredential(tenantId, clientId, secretKey));
+            });
+
+            services.AddTransient<IKeyVaultManager, KeyVaultManager>();
 
             services.AddControllersWithViews()
                 .AddMicrosoftIdentityUI(); 
