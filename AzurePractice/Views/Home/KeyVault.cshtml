@@ -21,15 +21,15 @@ var connectionString= secretClient.GetSecret("ConnectionString");
                 option.AddSecretClient(new System.Uri(keyVaultUrl));
             });<br />
 
-   services.AddScoped<IKeyVaultManager, KeyVaultManager>
-    ();
+   services.AddScoped<IKeyVaultManager, KeyVaultManager>();
 
     <br />
 
-    services.AddAzureClients(option=> {
-    option.AddSecretClient(new System.Uri(keyVaultUrl));
-    //option.UseCredential(new EnvironmentCredential());
-    //option.UseCredential(new DefaultAzureCredential());
-    option.UseCredential(new ClientSecretCredential(tenantId, clientId, secretKey));
+    services.AddAzureClients(option=> {<br />
+    option.AddSecretClient(new System.Uri(keyVaultUrl));<br />
+    option.AddKeyClient(new System.Uri(keyVaultUrl));<br />
+    //option.UseCredential(new EnvironmentCredential());<br />
+    //option.UseCredential(new DefaultAzureCredential());<br />
+    option.UseCredential(new ClientSecretCredential(tenantId, clientId, secretKey));<br />
     });
 

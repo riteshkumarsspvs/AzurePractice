@@ -9,5 +9,6 @@ namespace AzurePractice.Services
 
     {
         public Task<string> GetSecret(string secretName);
+        Task<string> GetKey();
     }
 }

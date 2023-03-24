@@ -26,6 +26,7 @@ namespace AzurePractice.Controllers
         public async Task<IActionResult> Index()
         {
             var connectionString = await _keyVaultManager.GetSecret("ConnectionString");
+            var key =await _keyVaultManager.GetKey();
             return View();
         }
 

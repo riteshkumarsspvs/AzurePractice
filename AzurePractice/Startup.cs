@@ -1,3 +1,4 @@
+using Azure.Core;
 using Azure.Identity;
 using AzurePractice.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -14,8 +15,9 @@ using Microsoft.Identity.Web.UI;
 namespace AzurePractice
 {
     public class Startup
-    {       
+    {
         private const string keyVaultUrl = "https://keyvaultpractice.vault.azure.net/";
+        private const string keyVaultKeyUrl = "https://keyvaultpractice.vault.azure.net/keys/AzurePracKey/d2c09ba1b4fa4d118119db94c37a40aa";
 
         public Startup(IConfiguration configuration)
         {
@@ -38,17 +40,24 @@ namespace AzurePractice
                })
                .AddMicrosoftIdentityWebApp(Configuration.GetSection("AzureAd"));
 
-            services.AddAzureClients(option=> {
+            services.AddAzureClients(option =>
+            {
                 option.AddSecretClient(new System.Uri(keyVaultUrl));
+                option.AddKeyClient(new System.Uri(keyVaultUrl));
                 //option.UseCredential(new EnvironmentCredential());
                 //option.UseCredential(new DefaultAzureCredential());
                 option.UseCredential(new ClientSecretCredential(tenantId, clientId, secretKey));
             });
 
+            //Dependency Injection
             services.AddTransient<IKeyVaultManager, KeyVaultManager>();
+            services.AddSingleton<TokenCredential, ClientSecretCredential>((serviceProvider =>
+            {
+                return new ClientSecretCredential(tenantId, clientId, secretKey);
+            }));
 
             services.AddControllersWithViews()
-                .AddMicrosoftIdentityUI(); 
+                .AddMicrosoftIdentityUI();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
