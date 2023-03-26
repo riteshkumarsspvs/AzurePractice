@@ -1,0 +1,35 @@
+﻿
+@{
+    ViewData["Title"] = "Blob";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Blob</h1>
+
+<br />
+ services.AddAzureClients(option =>
+<br />
+            {
+<br />
+                option.AddSecretClient(new System.Uri(keyVaultUrl));
+<br />
+                option.AddKeyClient(new System.Uri(keyVaultUrl));
+<br />
+                option.AddBlobServiceClient(new System.Uri(keyStorageUrl));
+<br />
+                //option.UseCredential(new EnvironmentCredential());
+<br />
+                //option.UseCredential(new DefaultAzureCredential());
+<br />
+                option.UseCredential(new ClientSecretCredential(tenantId, clientId, secretKey));
+<br />
+            });
+<br />
+<br />
+  var blobContainerClient = _blobServiceClient.GetBlobContainerClient("ritscontainer");<br />
+
+            var blobclient = blobContainerClient.GetBlobClient("Blob Test.txt");<br />
+            var response = blobclient.DownloadContent();<br />
+
+            var blobDownloadResult = response.Value;<br />
+            return blobDownloadResult.Content.ToString();<br />

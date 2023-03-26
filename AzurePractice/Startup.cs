@@ -18,6 +18,7 @@ namespace AzurePractice
     {
         private const string keyVaultUrl = "https://keyvaultpractice.vault.azure.net/";
         private const string keyVaultKeyUrl = "https://keyvaultpractice.vault.azure.net/keys/AzurePracKey/d2c09ba1b4fa4d118119db94c37a40aa";
+        private const string keyStorageUrl = "https://storagepracticerits.blob.core.windows.net";
 
         public Startup(IConfiguration configuration)
         {
@@ -44,6 +45,7 @@ namespace AzurePractice
             {
                 option.AddSecretClient(new System.Uri(keyVaultUrl));
                 option.AddKeyClient(new System.Uri(keyVaultUrl));
+                option.AddBlobServiceClient(new System.Uri(keyStorageUrl));
                 //option.UseCredential(new EnvironmentCredential());
                 //option.UseCredential(new DefaultAzureCredential());
                 option.UseCredential(new ClientSecretCredential(tenantId, clientId, secretKey));
@@ -51,6 +53,7 @@ namespace AzurePractice
 
             //Dependency Injection
             services.AddTransient<IKeyVaultManager, KeyVaultManager>();
+            services.AddTransient<IBlobManager, BlobManager>();
             services.AddSingleton<TokenCredential, ClientSecretCredential>((serviceProvider =>
             {
                 return new ClientSecretCredential(tenantId, clientId, secretKey);
