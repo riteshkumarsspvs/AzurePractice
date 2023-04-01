@@ -1,6 +1,7 @@
 using Azure.Core;
 using Azure.Identity;
 using AzurePractice.Services;
+using AzureSubscription;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
@@ -34,6 +35,7 @@ namespace AzurePractice
             var tenantId = Configuration.GetValue<string>("TenantId");
             var secretKey = Configuration.GetValue<string>("SecretKey");
 
+
             services.AddAuthentication(o =>
                {
                    o.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -57,10 +59,16 @@ namespace AzurePractice
             services.AddTransient<IKeyVaultManager, KeyVaultManager>();
             services.AddTransient<IBlobManager, BlobManager>();
             services.AddTransient<IServiceBusQueue, ServiceBusQueue>();
+            services.AddTransient<IServiceBusTopics, ServiceBusTopics>();
             services.AddSingleton<TokenCredential, ClientSecretCredential>((serviceProvider =>
             {
                 return new ClientSecretCredential(tenantId, clientId, secretKey);
             }));
+
+            /////Register Subscription
+            ///
+            var subscription = new Subscription(new Azure.Messaging.ServiceBus.ServiceBusClient("ServiceBusRits.servicebus.windows.net", new ClientSecretCredential(tenantId, clientId, secretKey)));
+
 
             services.AddControllersWithViews()
                 .AddMicrosoftIdentityUI();

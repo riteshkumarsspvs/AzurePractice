@@ -31,6 +31,7 @@ namespace AzurePractice.Services
             var serviceBusSender = _serviceBusClient.CreateSender("servicebusqueue");
             var serviceBusMessage = new ServiceBusMessage { Body = BinaryData.FromString("Message from app") };
             await serviceBusSender.SendMessageAsync(serviceBusMessage);
+            await serviceBusSender.CloseAsync();
         }
     }
 }
