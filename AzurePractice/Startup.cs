@@ -46,6 +46,8 @@ namespace AzurePractice
                 option.AddSecretClient(new System.Uri(keyVaultUrl));
                 option.AddKeyClient(new System.Uri(keyVaultUrl));
                 option.AddBlobServiceClient(new System.Uri(keyStorageUrl));
+                //option.AddServiceBusClient("Endpoint=sb://servicebusrits.servicebus.windows.net/;SharedAccessKeyName=ListenQueue;SharedAccessKey=K73rYO734f0YmiM1qvv8o1FB4CVYktaxn+ASbJr8lx4=;EntityPath=servicebusqueue");
+                option.AddServiceBusClientWithNamespace("ServiceBusRits.servicebus.windows.net");
                 //option.UseCredential(new EnvironmentCredential());
                 //option.UseCredential(new DefaultAzureCredential());
                 option.UseCredential(new ClientSecretCredential(tenantId, clientId, secretKey));
@@ -54,6 +56,7 @@ namespace AzurePractice
             //Dependency Injection
             services.AddTransient<IKeyVaultManager, KeyVaultManager>();
             services.AddTransient<IBlobManager, BlobManager>();
+            services.AddTransient<IServiceBusQueue, ServiceBusQueue>();
             services.AddSingleton<TokenCredential, ClientSecretCredential>((serviceProvider =>
             {
                 return new ClientSecretCredential(tenantId, clientId, secretKey);

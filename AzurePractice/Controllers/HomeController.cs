@@ -17,12 +17,14 @@ namespace AzurePractice.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly IKeyVaultManager _keyVaultManager;
         private readonly IBlobManager _blobManager;
+        private readonly IServiceBusQueue _serviceBusQueue;
 
-        public HomeController(ILogger<HomeController> logger, IKeyVaultManager keyVaultManager, IBlobManager blobManager)
+        public HomeController(ILogger<HomeController> logger, IKeyVaultManager keyVaultManager, IBlobManager blobManager, IServiceBusQueue serviceBusQueue)
         {
             _logger = logger;
             _keyVaultManager = keyVaultManager;
             _blobManager = blobManager;
+            _serviceBusQueue = serviceBusQueue;
         }
 
         public async Task<IActionResult> Index()
@@ -49,7 +51,14 @@ namespace AzurePractice.Controllers
 
         public IActionResult Blob()
         {
-            var value=_blobManager.GetBlob();
+            var value = _blobManager.GetBlob();
+            return View();
+        }
+
+        public IActionResult ServiceBus()
+        {  
+            _serviceBusQueue.PutMessageAsync();
+            var value = _serviceBusQueue.GetMessage();
             return View();
         }
 
