@@ -21,17 +21,17 @@ namespace AzureSubscription
         {
             //try
             //{
-                // add handler to process messages
-                _serviceBusProcessor.ProcessMessageAsync += MessageHandler;
+            // add handler to process messages
+            _serviceBusProcessor.ProcessMessageAsync += MessageHandler;
 
-                // add handler to process any errors
-                _serviceBusProcessor.ProcessErrorAsync += ErrorHandler;
+            // add handler to process any errors
+            _serviceBusProcessor.ProcessErrorAsync += ErrorHandler;
 
-                // start processing 
-                await _serviceBusProcessor.StartProcessingAsync();
+            // start processing 
+            await _serviceBusProcessor.StartProcessingAsync();
 
-                // stop processing 
-                //await _serviceBusProcessor.StopProcessingAsync();
+            // stop processing 
+            //await _serviceBusProcessor.StopProcessingAsync();
             //}
             //finally
             //{

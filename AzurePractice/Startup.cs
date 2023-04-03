@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -69,6 +70,16 @@ namespace AzurePractice
             ///
             var subscription = new Subscription(new Azure.Messaging.ServiceBus.ServiceBusClient("ServiceBusRits.servicebus.windows.net", new ClientSecretCredential(tenantId, clientId, secretKey)));
 
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor |
+                              ForwardedHeaders.XForwardedProto;
+                // Only loopback proxies are allowed by default.
+                // Clear that restriction because forwarders are enabled by explicit
+                // configuration.
+                options.KnownNetworks.Clear();
+                options.KnownProxies.Clear();
+            });
 
             services.AddControllersWithViews()
                 .AddMicrosoftIdentityUI();
@@ -87,11 +98,12 @@ namespace AzurePractice
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            app.UseForwardedHeaders();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
+            
             app.UseRouting();
-            app.UseAuthentication();
+            //app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
